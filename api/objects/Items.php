@@ -116,4 +116,23 @@ class Items {
       return false;
     }
   }
+
+  // 削除メソッド
+  function delete() {
+    // レコードを削除するクエリ
+    $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+
+    // クエリのステートメントを用意
+    $stmt = $this->conn->prepare($query);
+
+    // パラメータをバインド
+    $stmt->bindParam(1, $this->id);
+
+    // クエリを実行
+    if($stmt->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
