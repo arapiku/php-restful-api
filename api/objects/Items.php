@@ -33,7 +33,6 @@ class Items {
   // 新規作成メソッド
   function create() {
     // レコードを挿入するクエリ
-    // $query = "INSERT INTO " . $this->table_name . "SET title=:title, description=:description, price=:price, image=:image";
     $query = "INSERT INTO " . $this->table_name . "(title, description, price, image) VALUES (:title, :description, :price, :image)";
 
     // クエリのステートメントを用意
@@ -54,5 +53,29 @@ class Items {
     } else {
       return false;
     }
+  }
+
+  // id取得メソッド
+  function readById() {
+    // 単一レコードを取得するクエリ
+    $query = "SELECT * FROM " . $this->table_name . " WHERE id = ? LIMIT 0,1";
+
+    // クエリのステートメントを用意
+    $stmt = $this->conn->prepare($query);
+
+    // idをバインド
+    $stmt->bindParam(1, $this->id);
+
+    // クエリを実行
+    $stmt->execute();
+
+    // 検索結果を取得
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // プロパティに値をセット
+    $this->title = $row['title'];
+    $this->description = $row['description'];
+    $this->price = $row['price'];
+    $this->image = $row['image'];
   }
 }
