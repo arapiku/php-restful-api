@@ -1,10 +1,10 @@
 <?php
-class Product {
+class Items {
   // データベース＆テーブル接続
   private $conn;
-  private $table_name = "products";
+  private $table_name = "items";
 
-  // object properties
+  // オブジェクトのプロパティ
   public $id;
   public $title;
   public $description;
@@ -14,5 +14,18 @@ class Product {
   // コンストラクタ
   public function __construct($db) {
     $this->conn = $db;
+  }
+
+  function read() {
+    // 全てのクエリを選択
+    $query = "SELECT * FROM " . $this->table_name;
+
+    // クエリのステートメントを用意
+    $stmt = $this->conn->prepare($query);
+
+    // クエリを実行
+    $stmt->execute();
+
+    return $stmt;
   }
 }
