@@ -33,7 +33,11 @@ class Items {
   // 新規作成メソッド
   function create() {
     // レコードを挿入するクエリ
-    $query = "INSERT INTO " . $this->table_name . "(title, description, price, image) VALUES (:title, :description, :price, :image)";
+    $query = "INSERT INTO
+                " . $this->table_name . "
+                (title, description, price, image)
+              VALUES
+                (:title, :description, :price, :image)";
 
     // クエリのステートメントを用意
     $stmt = $this->conn->prepare($query);
@@ -77,5 +81,39 @@ class Items {
     $this->description = $row['description'];
     $this->price = $row['price'];
     $this->image = $row['image'];
+  }
+
+  // 更新メソッド
+  function update() {
+    // レコードを挿入するクエリ
+    $query = "UPDATE
+                " . $this->table_name . "
+              SET
+                  title = :title,
+                  description = :description,
+                  price = :price,
+                  image = :image
+              WHERE
+                  id = :id";
+
+    // クエリのステートメントを用意
+    $stmt = $this->conn->prepare($query);
+
+    // POSTされた商品データを取得
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    // パラメータをバインド
+    $stmt->bindParam(":id", $data['id']);
+    $stmt->bindParam(":title", $data['title']);
+    $stmt->bindParam(":description", $data['description']);
+    $stmt->bindParam(":price", $data['price']);
+    $stmt->bindParam(":image", $data['image']);
+
+    // クエリを実行
+    if($stmt->execute()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
