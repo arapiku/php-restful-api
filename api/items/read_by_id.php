@@ -22,7 +22,7 @@ $items->id = isset($_GET['id']) ? $_GET['id'] : die();
 // レコードを取得
 $items->readById();
 
-// 該当IDの商品がなければ
+// 該当IDの商品があれば
 if ($items->title != null) {
   // 配列を生成
   $items_arr = [
@@ -32,6 +32,7 @@ if ($items->title != null) {
     "price" => $items->price,
     "image" => $items->image
   ];
+// 該当IDの商品がなければ
 } else {
   http_response_code(404);
   $items_arr = ["message" => "No items found."];
