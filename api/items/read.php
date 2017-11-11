@@ -7,14 +7,14 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/database.php';
 include_once '../objects/Items.php';
 
-// インスタンスを作成
+// dbのインスタンスを作成
 $database = new Database();
 $db = $database->getConnection();
 
 // オブジェクトを初期化
 $items = new Items($db);
 
-// クエリ
+// クエリを呼び出す
 $stmt = $items->read();
 $num = $stmt->rowCount();
 
@@ -45,6 +45,7 @@ if($num > 0) {
 
   echo json_encode($items_arr);
 } else {
+  http_response_code(404);
   echo json_encode(
       ["message" => "No items found."]
   );
