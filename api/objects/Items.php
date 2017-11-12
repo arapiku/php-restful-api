@@ -85,7 +85,7 @@ class Items {
 
   // 更新メソッド
   function update() {
-    // レコードを挿入するクエリ
+    // レコードを更新するクエリ
     $query = "UPDATE
                 " . $this->table_name . "
               SET
@@ -134,5 +134,27 @@ class Items {
     } else {
       return false;
     }
+  }
+
+  // 文字列検索メソッド
+  function search($keywords) {
+    // 全てのレコードから$keywordsに該当するレコードを抽出するクエリ
+    $query = "SELECT * FROM " . $this->table_name . " WHERE title LIKE ? OR description LIKE ? ORDER BY title OR description DESC";
+
+    // クエリのステートメントを用意
+    $stmt = $this->conn->prepare($query);
+
+    // エスケープ
+    $keywords = htmlspecialchars(strip_tags($keywords));
+    $keywords = "%{$keywords}%";
+
+    // パラメータをバインド
+    $stmt->bindParam(1, $keywords);
+    $stmt->bindParam(2, $keywords);
+
+    // クエリを実行
+    $stmt->execute();
+
+    return $stmt;
   }
 }
