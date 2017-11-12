@@ -26,14 +26,15 @@ $items->readById();
 // 該当IDの商品があれば
 if ($items->title != null) {
 
-  // 商品データをアップデート
+  // 商品データを削除
   if ($items->delete()) {
     http_response_code(204);
     echo '{';
       echo '"message": "Items was deleted."';
     echo '}';
-  // アップデートできない
+  // アップデート削除
   } else {
+    error_log(date("[Y/m/d H:i:s]") . " [ERROR] 該当IDの商品を削除できませんでした。\n", 3, '/var/tmp/error.log');
     http_response_code(409);
     echo '{';
       echo '"message": "Unable to delete items."';

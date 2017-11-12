@@ -51,16 +51,19 @@ class Items {
     if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
       $stmt->bindParam(":title", $data['title']);
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品名が空か101文字以上で入力されました。\n", 3, '/var/tmp/error.log');
       return false;
     }
     if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
       $stmt->bindParam(":description", $data['description']);
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品説明が空か501文字以上で入力されました。\n", 3, '/var/tmp/error.log');
       return false;
     }
     if(!empty($data['price'])) {
       $stmt->bindParam(":price", $data['price']);
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 金額が空で入力されました。\n", 3, '/var/tmp/error.log');
       return false;
     }
     $stmt->bindParam(":image", $data['image']);
@@ -69,6 +72,7 @@ class Items {
     if($stmt->execute()) {
       return true;
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 作成クエリの実行に失敗しました。\n", 3, '/var/tmp/error.log');
       return false;
     }
   }
@@ -118,19 +122,22 @@ class Items {
 
     // パラメータをバリデートしつつバインド
     $stmt->bindParam(":id", $data['id']);
-    if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,10}$/", $data['title'])) {
+    if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
       $stmt->bindParam(":title", $data['title']);
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品名が空か101文字以上で入力されました。\n", 3, '/var/tmp/error.log');
       return false;
     }
     if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
       $stmt->bindParam(":description", $data['description']);
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品説明が空か501文字以上で入力されました。\n", 3, '/var/tmp/error.log');
       return false;
     }
     if(!empty($data['price'])) {
       $stmt->bindParam(":price", $data['price']);
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 金額が空で入力されました。\n", 3, '/var/tmp/error.log');
       return false;
     }
     $stmt->bindParam(":image", $data['image']);
@@ -140,6 +147,7 @@ class Items {
     if($stmt->execute()) {
       return true;
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 更新クエリの実行に失敗しました。\n", 3, '/var/tmp/error.log');
       return false;
     }
   }
@@ -159,6 +167,7 @@ class Items {
     if($stmt->execute()) {
       return true;
     } else {
+      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 削除クエリの実行に失敗しました。\n", 3, '/var/tmp/error.log');
       return false;
     }
   }
