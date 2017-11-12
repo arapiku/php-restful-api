@@ -45,10 +45,24 @@ class Items {
     // POSTされた商品データを取得
     $data = json_decode(file_get_contents("php://input"), true);
 
-    // パラメータをバインド
-    $stmt->bindParam(":title", $data['title']);
-    $stmt->bindParam(":description", $data['description']);
-    $stmt->bindParam(":price", $data['price']);
+    // print_r($data['title']);
+
+    // パラメータをバリデートしつつバインド
+    if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
+      $stmt->bindParam(":title", $data['title']);
+    } else {
+      return false;
+    }
+    if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
+      $stmt->bindParam(":description", $data['description']);
+    } else {
+      return false;
+    }
+    if(!empty($data['price'])) {
+      $stmt->bindParam(":price", $data['price']);
+    } else {
+      return false;
+    }
     $stmt->bindParam(":image", $data['image']);
 
     // クエリを実行
@@ -102,12 +116,25 @@ class Items {
     // POSTされた商品データを取得
     $data = json_decode(file_get_contents("php://input"), true);
 
-    // パラメータをバインド
+    // パラメータをバリデートしつつバインド
     $stmt->bindParam(":id", $data['id']);
-    $stmt->bindParam(":title", $data['title']);
-    $stmt->bindParam(":description", $data['description']);
-    $stmt->bindParam(":price", $data['price']);
+    if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,10}$/", $data['title'])) {
+      $stmt->bindParam(":title", $data['title']);
+    } else {
+      return false;
+    }
+    if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
+      $stmt->bindParam(":description", $data['description']);
+    } else {
+      return false;
+    }
+    if(!empty($data['price'])) {
+      $stmt->bindParam(":price", $data['price']);
+    } else {
+      return false;
+    }
     $stmt->bindParam(":image", $data['image']);
+
 
     // クエリを実行
     if($stmt->execute()) {
@@ -157,4 +184,40 @@ class Items {
 
     return $stmt;
   }
+
+  /*
+  ** バリデーション
+  ** 組み込み方法に悩んだので一旦放置
+
+  function validation() {
+    $errors = [];
+
+    // titleの長さチェック
+    if (!preg_match("/^[A-Za-z0-9]{1,10}$/", $data['title'])) {
+      $errors[] = "商品名は10文字以内で入力してください。";
+    }
+
+    // titleの空チェック
+    if (empty($data['title'])) {
+      $errors[] = "商品名は入力必須項目です。";
+    }
+
+    // descriptionの長さチェック
+    if (!preg_match("/^[A-Za-z0-9]{1,10}$/", $data['description'])) {
+      $errors[] = "商品説明は10文字以内で入力してください。";
+    }
+
+    // descriptionの空チェック
+    if (empty($data['description'])) {
+      $errors[] = "商品説明は入力必須項目です。";
+    }
+
+    // priceの空チェック
+    if (empty($data['price'])) {
+      $errors[] = "金額は入力必須項目です。";
+    }
+    return $errors;
+  }
+
+  */
 }
