@@ -47,3 +47,6 @@ if ($items->title != null) {
     echo '"message": "No item found."';
   echo '}';
 }
+
+// PDOの接続を断つ
+$db = null;

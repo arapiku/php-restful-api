@@ -50,3 +50,7 @@ if($num > 0) {
       ["message" => "No items found."]
   );
 }
+
+// PDOの接続を断つ
+$db = null;
+$stmt = null;

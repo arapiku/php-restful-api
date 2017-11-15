@@ -31,3 +31,6 @@ if($items->create()) {
     echo '"message": "Unable to create items."';
   echo '}';
 }
+
+// PDOの接続を断つ
+$db = null;

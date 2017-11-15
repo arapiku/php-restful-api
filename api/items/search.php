@@ -23,7 +23,7 @@ $num = $stmt->rowCount();
 
 // もしレコードが1件以上あれば
 if($num > 0) {
-  
+
   // 配列を生成
   $items_arr = [];
   $items_arr["records"] = [];
@@ -52,3 +52,7 @@ if($num > 0) {
   http_response_code(404);
   echo json_encode(["message" => "No items found"]);
 }
+
+// PDOの接続を断つ
+$db = null;
+$stmt = null;

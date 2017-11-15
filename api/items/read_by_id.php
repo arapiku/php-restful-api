@@ -40,3 +40,6 @@ if ($items->title != null) {
 
 // jsonを出力
 print_r(json_encode($items_arr));
+
+// PDOの接続を断つ
+$db = null;
