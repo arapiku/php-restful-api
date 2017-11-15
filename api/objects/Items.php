@@ -1,4 +1,7 @@
 <?php
+// ここでは呼ばなくても良いかも
+// include_once '../config/config.php';
+
 class Items {
   // データベース＆テーブル接続
   private $conn;
@@ -21,13 +24,20 @@ class Items {
     // 全てのレコードを選択するクエリ
     $query = "SELECT * FROM " . $this->table_name;
 
-    // クエリのステートメントを用意
-    $stmt = $this->conn->prepare($query);
+    try {
+      // クエリのステートメントを用意
+      $stmt = $this->conn->prepare($query);
 
-    // クエリを実行
-    $stmt->execute();
+      // クエリを実行
+      $stmt->execute();
 
-    return $stmt;
+      return $stmt;
+
+    } catch (PDOException $e) {
+      // エラーメッセージを出力
+      print "ERROR MESSAGE : {$e->getMessage()}";
+    }
+
   }
 
   // 新規作成メソッド
@@ -39,42 +49,47 @@ class Items {
               VALUES
                 (:title, :description, :price, :image)";
 
-    // クエリのステートメントを用意
-    $stmt = $this->conn->prepare($query);
 
-    // POSTされた商品データを取得
-    $data = json_decode(file_get_contents("php://input"), true);
+    try {
+      // クエリのステートメントを用意
+      $stmt = $this->conn->prepare($query);
 
-    // print_r($data['title']);
+      // POSTされた商品データを取得
+      $data = json_decode(file_get_contents("php://input"), true);
 
-    // パラメータをバリデートしつつバインド
-    if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
-      $stmt->bindParam(":title", $data['title']);
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品名が空か101文字以上で入力されました。\n", 3, '/var/tmp/error.log');
-      return false;
-    }
-    if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
-      $stmt->bindParam(":description", $data['description']);
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品説明が空か501文字以上で入力されました。\n", 3, '/var/tmp/error.log');
-      return false;
-    }
-    if(!empty($data['price'])) {
-      $stmt->bindParam(":price", $data['price']);
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 金額が空で入力されました。\n", 3, '/var/tmp/error.log');
-      return false;
-    }
-    $stmt->bindParam(":image", $data['image']);
+      // パラメータをバリデートしつつバインド
+      if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
+        $stmt->bindParam(":title", $data['title']);
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品名が空か101文字以上で入力されました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+      if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
+        $stmt->bindParam(":description", $data['description']);
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品説明が空か501文字以上で入力されました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+      if(!empty($data['price'])) {
+        $stmt->bindParam(":price", $data['price']);
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 金額が空で入力されました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+      $stmt->bindParam(":image", $data['image']);
 
-    // クエリを実行
-    if($stmt->execute()) {
-      return true;
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 作成クエリの実行に失敗しました。\n", 3, '/var/tmp/error.log');
-      return false;
+      // クエリを実行
+      if($stmt->execute()) {
+        return true;
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 作成クエリの実行に失敗しました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+    } catch (PDOException $e) {
+      // エラーメッセージを出力
+      print "ERROR MESSAGE : {$e->getMessage()}";
     }
+
   }
 
   // id取得メソッド
@@ -82,23 +97,29 @@ class Items {
     // 単一レコードを取得するクエリ
     $query = "SELECT * FROM " . $this->table_name . " WHERE id = ? LIMIT 0,1";
 
-    // クエリのステートメントを用意
-    $stmt = $this->conn->prepare($query);
+    try {
+      // クエリのステートメントを用意
+      $stmt = $this->conn->prepare($query);
 
-    // idをバインド
-    $stmt->bindParam(1, $this->id);
+      // idをバインド
+      $stmt->bindParam(1, $this->id);
 
-    // クエリを実行
-    $stmt->execute();
+      // クエリを実行
+      $stmt->execute();
 
-    // 検索結果を取得
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      // 検索結果を取得
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // プロパティに値をセット
-    $this->title = $row['title'];
-    $this->description = $row['description'];
-    $this->price = $row['price'];
-    $this->image = $row['image'];
+      // プロパティに値をセット
+      $this->title = $row['title'];
+      $this->description = $row['description'];
+      $this->price = $row['price'];
+      $this->image = $row['image'];
+    } catch (PDOException $e) {
+      // エラーメッセージを出力
+      print "ERROR MESSAGE : {$e->getMessage()}";
+    }
+
   }
 
   // 更新メソッド
@@ -114,84 +135,104 @@ class Items {
               WHERE
                   id = :id";
 
-    // クエリのステートメントを用意
-    $stmt = $this->conn->prepare($query);
+    try {
+      // クエリのステートメントを用意
+      $stmt = $this->conn->prepare($query);
 
-    // POSTされた商品データを取得
-    $data = json_decode(file_get_contents("php://input"), true);
+      // POSTされた商品データを取得
+      $data = json_decode(file_get_contents("php://input"), true);
 
-    // パラメータをバリデートしつつバインド
-    $stmt->bindParam(":id", $data['id']);
-    if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
-      $stmt->bindParam(":title", $data['title']);
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品名が空か101文字以上で入力されました。\n", 3, '/var/tmp/error.log');
-      return false;
-    }
-    if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
-      $stmt->bindParam(":description", $data['description']);
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品説明が空か501文字以上で入力されました。\n", 3, '/var/tmp/error.log');
-      return false;
-    }
-    if(!empty($data['price'])) {
-      $stmt->bindParam(":price", $data['price']);
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 金額が空で入力されました。\n", 3, '/var/tmp/error.log');
-      return false;
-    }
-    $stmt->bindParam(":image", $data['image']);
+      // パラメータをバリデートしつつバインド
+      $stmt->bindParam(":id", $data['id']);
+      if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
+        $stmt->bindParam(":title", $data['title']);
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品名が空か101文字以上で入力されました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+      if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
+        $stmt->bindParam(":description", $data['description']);
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品説明が空か501文字以上で入力されました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+      if(!empty($data['price'])) {
+        $stmt->bindParam(":price", $data['price']);
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 金額が空で入力されました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+      $stmt->bindParam(":image", $data['image']);
 
-
-    // クエリを実行
-    if($stmt->execute()) {
-      return true;
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 更新クエリの実行に失敗しました。\n", 3, '/var/tmp/error.log');
-      return false;
+      // クエリを実行
+      if($stmt->execute()) {
+        return true;
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 更新クエリの実行に失敗しました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+    } catch (PDOException $e) {
+      // エラーメッセージを出力
+      print "ERROR MESSAGE : {$e->getMessage()}";
     }
+
   }
 
   // 削除メソッド
   function delete() {
-    // レコードを削除するクエリ
-    $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
 
-    // クエリのステートメントを用意
-    $stmt = $this->conn->prepare($query);
+    try {
+      // レコードを削除するクエリ
+      $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
 
-    // パラメータをバインド
-    $stmt->bindParam(1, $this->id);
+      // クエリのステートメントを用意
+      $stmt = $this->conn->prepare($query);
 
-    // クエリを実行
-    if($stmt->execute()) {
-      return true;
-    } else {
-      error_log(date("[Y/m/d H:i:s]") . " [ERROR] 削除クエリの実行に失敗しました。\n", 3, '/var/tmp/error.log');
-      return false;
+      // パラメータをバインド
+      $stmt->bindParam(1, $this->id);
+
+      // クエリを実行
+      if($stmt->execute()) {
+        return true;
+      } else {
+        error_log(date("[Y/m/d H:i:s]") . " [ERROR] 削除クエリの実行に失敗しました。\n", 3, ERROR_LOG_PATH);
+        return false;
+      }
+    } catch (PDOException $e) {
+      // エラーメッセージを出力
+      print "ERROR MESSAGE : {$e->getMessage()}";
     }
+
   }
 
   // 文字列検索メソッド
   function search($keywords) {
-    // 全てのレコードから$keywordsに該当するレコードを抽出するクエリ
-    $query = "SELECT * FROM " . $this->table_name . " WHERE title LIKE ? OR description LIKE ? ORDER BY title OR description DESC";
 
-    // クエリのステートメントを用意
-    $stmt = $this->conn->prepare($query);
+    try {
+      // 全てのレコードから$keywordsに該当するレコードを抽出するクエリ
+      $query = "SELECT * FROM " . $this->table_name . " WHERE title LIKE ? OR description LIKE ? ORDER BY title OR description DESC";
 
-    // エスケープ
-    $keywords = htmlspecialchars(strip_tags($keywords));
-    $keywords = "%{$keywords}%";
+      // クエリのステートメントを用意
+      $stmt = $this->conn->prepare($query);
 
-    // パラメータをバインド
-    $stmt->bindParam(1, $keywords);
-    $stmt->bindParam(2, $keywords);
+      // エスケープ
+      $keywords = htmlspecialchars(strip_tags($keywords));
+      $keywords = "%{$keywords}%";
 
-    // クエリを実行
-    $stmt->execute();
+      // パラメータをバインド
+      $stmt->bindParam(1, $keywords);
+      $stmt->bindParam(2, $keywords);
 
-    return $stmt;
+      // クエリを実行
+      $stmt->execute();
+
+      return $stmt;
+
+    } catch (PDOException $e) {
+      // エラーメッセージを出力
+      print "ERROR MESSAGE : {$e->getMessage()}";
+    }
+
   }
 
   /*
