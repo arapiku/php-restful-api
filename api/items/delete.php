@@ -34,7 +34,7 @@ if ($items->title != null) {
     echo '}';
   // アップデート削除
   } else {
-    error_log(date("[Y/m/d H:i:s]") . " [ERROR] 該当IDの商品を削除できませんでした。\n", 3, '/var/tmp/error.log');
+    error_log(date("[Y/m/d H:i:s]") . " [ERROR] 該当IDの商品を削除できませんでした。\n", 3, ERROR_LOG_PATH);
     http_response_code(409);
     echo '{';
       echo '"message": "Unable to delete items."';

@@ -8,6 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 // データベースファイルとオブジェクトファイルを読み込む
 include_once '../config/database.php';
+include_once '../config/config.php';
 include_once '../objects/Items.php';
 
 // dbのインスタンスを作成
@@ -24,7 +25,7 @@ if($items->create()) {
     echo '"message": "Items was created."';
   echo '}';
 } else {
-  error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品を作成できませんでした。\n", 3, '/var/tmp/error.log');
+  error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品を作成できませんでした。\n", 3, ERROR_LOG_PATH);
   http_response_code(409);
   echo '{';
     echo '"message": "Unable to create items."';
