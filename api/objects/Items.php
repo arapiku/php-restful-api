@@ -5,7 +5,7 @@
 class Items {
   // データベース＆テーブル接続
   private $conn;
-  private $table_name = "items";
+  private $table_name = "item";
 
   // オブジェクトのプロパティ
   public $id;
@@ -34,6 +34,8 @@ class Items {
       return $stmt;
 
     } catch (PDOException $e) {
+      // エラーログを残す
+      error_log(date("[Y/m/d H:i:s]") . "{$e->getMessage()}\n", 3, ERROR_LOG_PATH);
       // エラーメッセージを出力
       print "ERROR MESSAGE : {$e->getMessage()}";
     }
@@ -86,6 +88,8 @@ class Items {
         return false;
       }
     } catch (PDOException $e) {
+      // エラーログを残す
+      error_log(date("[Y/m/d H:i:s]") . "{$e->getMessage()}\n", 3, ERROR_LOG_PATH);
       // エラーメッセージを出力
       print "ERROR MESSAGE : {$e->getMessage()}";
     }
@@ -116,6 +120,8 @@ class Items {
       $this->price = $row['price'];
       $this->image = $row['image'];
     } catch (PDOException $e) {
+      // エラーログを残す
+      error_log(date("[Y/m/d H:i:s]") . "{$e->getMessage()}\n", 3, ERROR_LOG_PATH);
       // エラーメッセージを出力
       print "ERROR MESSAGE : {$e->getMessage()}";
     }
@@ -172,6 +178,8 @@ class Items {
         return false;
       }
     } catch (PDOException $e) {
+      // エラーログを残す
+      error_log(date("[Y/m/d H:i:s]") . "{$e->getMessage()}" . "\n", 3, ERROR_LOG_PATH);
       // エラーメッセージを出力
       print "ERROR MESSAGE : {$e->getMessage()}";
     }
@@ -199,6 +207,8 @@ class Items {
         return false;
       }
     } catch (PDOException $e) {
+      // エラーログを残す
+      error_log(date("[Y/m/d H:i:s]") . "{$e->getMessage()}\n", 3, ERROR_LOG_PATH);
       // エラーメッセージを出力
       print "ERROR MESSAGE : {$e->getMessage()}";
     }
@@ -229,6 +239,8 @@ class Items {
       return $stmt;
 
     } catch (PDOException $e) {
+      // エラーログを残す
+      error_log(date("[Y/m/d H:i:s]") . "{$e->getMessage()}\n", 3, ERROR_LOG_PATH);
       // エラーメッセージを出力
       print "ERROR MESSAGE : {$e->getMessage()}";
     }
