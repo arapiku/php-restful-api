@@ -5,7 +5,7 @@
 class Items {
   // データベース＆テーブル接続
   private $conn;
-  private $table_name = "item";
+  private $table_name = "items";
 
   // オブジェクトのプロパティ
   public $id;
@@ -60,14 +60,16 @@ class Items {
       $data = json_decode(file_get_contents("php://input"), true);
 
       // パラメータをバリデートしつつバインド
-      if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
-        $stmt->bindParam(":title", $data['title']);
+      if(!empty($data['title']) && preg_match("/^[A-Za-z0-9亜-熙ぁ-んァ-ヶ\s]{1,100}$/", $data['title'])) {
+        $input_data = mb_convert_encoding($data['title'], 'UTF-8');
+        $stmt->bindParam(":title", $input_data);
       } else {
         error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品名が空か101文字以上で入力されました。\n", 3, ERROR_LOG_PATH);
         return false;
       }
-      if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
-        $stmt->bindParam(":description", $data['description']);
+      if(!empty($data['description']) && preg_match("/^[A-Za-z0-9亜-熙ぁ-んァ-ヶ\s]{1,500}$/", $data['description'])) {
+        $input_data = mb_convert_encoding($data['description'], 'UTF-8');
+        $stmt->bindParam(":description", $input_data);
       } else {
         error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品説明が空か501文字以上で入力されました。\n", 3, ERROR_LOG_PATH);
         return false;
@@ -150,14 +152,16 @@ class Items {
 
       // パラメータをバリデートしつつバインド
       $stmt->bindParam(":id", $data['id']);
-      if(!empty($data['title']) && preg_match("/^[A-Za-z0-9\s]{1,100}$/", $data['title'])) {
-        $stmt->bindParam(":title", $data['title']);
+      if(!empty($data['title']) && preg_match("/^[A-Za-z0-9亜-熙ぁ-んァ-ヶ\s]{1,100}$/", $data['title'])) {
+        $input_data = mb_convert_encoding($data['title'], 'UTF-8');
+        $stmt->bindParam(":title", $input_data);
       } else {
         error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品名が空か101文字以上で入力されました。\n", 3, ERROR_LOG_PATH);
         return false;
       }
-      if(!empty($data['description']) && preg_match("/^[A-Za-z0-9\s]{1,500}$/", $data['description'])) {
-        $stmt->bindParam(":description", $data['description']);
+      if(!empty($data['description']) && preg_match("/^[A-Za-z0-9亜-熙ぁ-んァ-ヶ\s]{1,500}$/", $data['description'])) {
+        $input_data = mb_convert_encoding($data['description'], 'UTF-8');
+        $stmt->bindParam(":description", $input_data);
       } else {
         error_log(date("[Y/m/d H:i:s]") . " [ERROR] 商品説明が空か501文字以上で入力されました。\n", 3, ERROR_LOG_PATH);
         return false;
